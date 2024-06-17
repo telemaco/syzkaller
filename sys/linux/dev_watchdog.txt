@@ -1,0 +1,28 @@
+# Copyright 2024 syzkaller project authors. All rights reserved.
+# Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+
+include <uapi/asm/ioctl.h>
+include <uapi/linux/fcntl.h>
+include <uapi/linux/watchdog.h>
+
+watchdog_info {
+	options			int32
+	firmware_version	int32
+	identity		array[int8, 32]
+}
+
+resource fd_wd[fd]
+
+syz_open_dev$watchdog(dev ptr[in, string["/dev/watchdog#"]], id intptr, flags flags[open_flags]) fd_wd
+
+ioctl$WDIOC_GETSUPPORT(fd fd_wd, cmd const[WDIOC_GETSUPPORT], arg ptr[out, watchdog_info])
+ioctl$WDIOC_GETSTATUS(fd fd_wd, cmd const[WDIOC_GETSTATUS], arg ptr[out, int32])
+ioctl$WDIOC_GETBOOTSTATUS(fd fd_wd, cmd const[WDIOC_GETBOOTSTATUS], arg ptr[out, int32])
+ioctl$WDIOC_GETTEMP(fd fd_wd, cmd const[WDIOC_GETTEMP], arg ptr[out, int32])
+ioctl$WDIOC_SETOPTIONS(fd fd_wd, cmd const[WDIOC_SETOPTIONS], arg ptr[in, int32])
+ioctl$WDIOC_KEEPALIVE(fd fd_wd, cmd const[WDIOC_KEEPALIVE], arg ptr[in, int32])
+ioctl$WDIOC_SETTIMEOUT(fd fd_wd, cmd const[WDIOC_SETTIMEOUT], arg ptr[in, int32])
+ioctl$WDIOC_GETTIMEOUT(fd fd_wd, cmd const[WDIOC_GETTIMEOUT], arg ptr[out, int32])
+ioctl$WDIOC_SETPRETIMEOUT(fd fd_wd, cmd const[WDIOC_SETPRETIMEOUT], arg ptr[in, int32])
+ioctl$WDIOC_GETPRETIMEOUT(fd fd_wd, cmd const[WDIOC_GETPRETIMEOUT], arg ptr[out, int32])
+ioctl$WDIOC_GETTIMELEFT(fd fd_wd, cmd const[WDIOC_GETTIMELEFT], arg ptr[out, int32])
